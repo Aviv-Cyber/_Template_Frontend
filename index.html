@@ -48,6 +48,20 @@
       background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(161, 161, 170, 0.05) 45%, transparent 72%);
     }
 
+    /* Dynamic State Title on Lock Screen */
+    .sphere-state-title {
+      transition:
+        opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.4s ease;
+    }
+
+    .sphere-state-title.title-updating {
+      opacity: 0;
+      filter: blur(4px);
+      transform: translate3d(0, -4px, 0);
+    }
+
     /* Apple iOS 26 Liquid Glass Pill */
     .glass-sphere-form {
       background: linear-gradient(
@@ -64,20 +78,57 @@
         inset 0 -1px 2px rgba(255, 255, 255, 0.16),
         0 14px 34px rgba(0, 0, 0, 0.42);
       transition:
-        opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        border-color 0.3s ease,
-        box-shadow 0.3s ease;
+        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.35s ease,
+        box-shadow 0.35s ease;
     }
 
     .glass-sphere-form.pill-hidden {
       opacity: 0;
+      filter: blur(8px);
       pointer-events: none;
-      transform: translate(-50%, -10px) scale(0.94);
+      transform: translate3d(-50%, 8px, 0) scale(0.95);
     }
 
     .glass-sphere-form.pill-visible {
       opacity: 1;
+      filter: blur(0px);
+      pointer-events: auto;
+      transform: translate3d(-50%, 0px, 0) scale(1);
+    }
+
+    .glass-sphere-form.pill-shake {
+      animation: pillShake 0.44s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      border-color: rgba(248, 113, 113, 0.75);
+    }
+
+    .glass-sphere-form.pill-connecting {
+      filter: blur(6px);
+      opacity: 0.48;
+      pointer-events: none;
+      transform: translate3d(-50%, 0px, 0) scale(0.965);
+    }
+
+    @keyframes pillShake {
+      0%, 100% { transform: translate3d(-50%, 0px, 0); }
+      20% { transform: translate3d(calc(-50% - 7px), 0px, 0); }
+      40% { transform: translate3d(calc(-50% + 7px), 0px, 0); }
+      60% { transform: translate3d(calc(-50% - 4px), 0px, 0); }
+      80% { transform: translate3d(calc(-50% + 4px), 0px, 0); }
+    }
+
+    .glass-sphere-form.pill-hidden {
+      opacity: 0;
+      filter: blur(8px);
+      pointer-events: none;
+      transform: translate(-50%, 6px) scale(0.95);
+    }
+
+    .glass-sphere-form.pill-visible {
+      opacity: 1;
+      filter: blur(0px);
       pointer-events: auto;
       transform: translate(-50%, 0px) scale(1);
     }
@@ -85,6 +136,13 @@
     .glass-sphere-form.pill-shake {
       animation: pillShake 0.44s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       border-color: rgba(248, 113, 113, 0.75);
+    }
+
+    .glass-sphere-form.pill-connecting {
+      filter: blur(5px);
+      opacity: 0.55;
+      pointer-events: none;
+      transform: translate(-50%, 0px) scale(0.97);
     }
 
     @keyframes pillShake {
@@ -127,6 +185,61 @@
       transform: scale(0.92);
     }
 
+    /* Smooth fade-in reveal for the unlocked vault workspace */
+    .vault-screen-hidden {
+      opacity: 0;
+      filter: blur(12px);
+      transform: translate3d(0, 16px, 0) scale(0.975);
+      pointer-events: none;
+      will-change: opacity, transform, filter;
+    }
+
+    .vault-screen-visible {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translate3d(0, 0px, 0) scale(1);
+      pointer-events: auto;
+      will-change: opacity, transform, filter;
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .vault-screen-collapsing {
+      opacity: 0;
+      filter: blur(14px);
+      transform: translate3d(0, 0, 0) scale(0.84);
+      pointer-events: none;
+      will-change: opacity, transform, filter;
+      transition:
+        opacity 0.52s cubic-bezier(0.32, 0.72, 0, 1),
+        transform 0.52s cubic-bezier(0.32, 0.72, 0, 1),
+        filter 0.48s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    .vault-screen-visible {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0px) scale(1);
+      pointer-events: auto;
+      transition:
+        opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.6s ease;
+    }
+
+    .vault-screen-collapsing {
+      opacity: 0;
+      filter: blur(12px);
+      transform: scale(0.84);
+      pointer-events: none;
+      transition:
+        opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.4s ease;
+    }
+
     /* Subtle custom scrollbar for unlocked items */
     ::-webkit-scrollbar {
       width: 5px;
@@ -149,6 +262,9 @@
   <main id="vault-lock-screen" class="relative z-10 flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center">
     <div id="sphere-anchor" class="relative flex items-center justify-center select-none touch-none" style="width: min(72vw, 220px); aspect-ratio: 1;">
       
+      <!-- Dynamic State Title Above Sphere -->
+      <h1 id="sphere-state-title" class="sphere-state-title absolute bottom-full mb-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs sm:text-sm font-medium tracking-wide text-zinc-300/90 pointer-events-none select-none"></h1>
+
       <!-- Subtle radial ambient halo -->
       <div id="sphere-halo" class="sphere-ambient-halo absolute -inset-12 rounded-full blur-2xl pointer-events-none transition-all duration-700"></div>
 
@@ -159,7 +275,7 @@
       <canvas id="liquidSphere" class="relative z-30 w-full h-full rounded-full cursor-grab active:cursor-grabbing"></canvas>
 
       <!-- Liquid Glass Password Input Pill -->
-      <form id="glass-sphere-form" class="glass-sphere-form pill-hidden absolute top-full mt-6 left-1/2 w-full max-w-xs flex items-center gap-2 rounded-full p-1.5 z-40" autocomplete="off">
+      <form id="glass-sphere-form" class="glass-sphere-form pill-hidden absolute top-full mt-6 left-1/2 w-full max-w-[145px] flex items-center rounded-full p-1 z-40" autocomplete="off">
         <input
           type="password"
           id="glass-sphere-input"
@@ -167,42 +283,93 @@
           required
           placeholder="••••••••"
           aria-label="Vault Password"
-          class="glass-sphere-input flex-1 min-w-0 rounded-full px-4 py-2 text-xs font-mono tracking-wider"
+          class="glass-sphere-input w-full rounded-full px-3 py-1.5 text-xs font-mono tracking-wider text-center"
         />
-        <button
-          type="submit"
-          id="glass-submit-btn"
-          aria-label="Unlock Vault"
-          class="glass-submit-btn w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0"
-        >
-          <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-          </svg>
-        </button>
       </form>
     </div>
   </main>
 
-  <!-- UNLOCKED APP SCREEN -->
-  <section id="unlocked-app-screen" class="hidden relative z-10 flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col justify-center">
-    <div class="bg-[#0F0F0F] border border-zinc-800/80 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-6">
-      
-      <!-- Top Bar with Mini Status Indicator -->
+  <!-- UNLOCKED VAULT WORKSPACE -->
+  <section id="unlocked-app-screen" class="hidden vault-screen-hidden relative z-10 flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col justify-center">
+    <div class="w-full bg-[#0F0F0F] border border-zinc-800/80 rounded-3xl p-5 sm:p-7 space-y-5 shadow-2xl">
+      <!-- Top Bar with Mini Status Sphere -->
       <div class="flex items-center justify-between border-b border-zinc-800/80 pb-4">
-        <div class="flex items-center gap-3">
-          <span id="status-orb-dot" class="w-3 h-3 rounded-full bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)] transition-colors duration-500"></span>
-          <div>
-            <h1 class="text-base sm:text-lg font-semibold tracking-tight text-zinc-100">VaultDB</h1>
-            <p class="text-xs text-zinc-400">חיבור מוצפן ל-data.json</p>
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="relative flex items-center justify-center w-8 h-8 shrink-0">
+            <canvas id="miniLiquidSphere" class="w-8 h-8 rounded-full"></canvas>
           </div>
+          <h2 id="vault-header-title" class="text-sm sm:text-base font-medium text-zinc-100 truncate"></h2>
         </div>
-        <button
-          type="button"
-          id="lock-btn"
-          class="px-4 py-2 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-medium text-zinc-300 transition-colors"
-        >
-          נעל כספת
-        </button>
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            id="toggle-titles-btn"
+            class="px-3.5 py-2 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-medium text-zinc-300 transition-colors"
+          >
+            ניהול כותרות
+          </button>
+          <button
+            type="button"
+            id="lock-btn"
+            class="px-4 py-2 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-medium text-zinc-300 transition-colors"
+          >
+            נעל כספת
+          </button>
+        </div>
+      </div>
+
+      <!-- Collapsible Title Manager Panel -->
+      <div id="title-manager-panel" class="hidden rounded-2xl bg-zinc-900/75 border border-zinc-800/90 p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-zinc-200">ניהול כותרות לפי מצב</span>
+          <button type="button" id="reset-titles-btn" class="text-[11px] text-zinc-400 hover:text-zinc-200 transition-colors">
+            איפוס לברירת מחדל
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+          <label class="flex flex-col gap-1">
+            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
+              <span class="w-2 h-2 rounded-full bg-zinc-400"></span>
+              אפור (מצב רדום)
+            </span>
+            <input type="text" data-title-state="initial" placeholder="כספת נעולה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
+              <span class="w-2 h-2 rounded-full bg-purple-300"></span>
+              פעיל (הזנת סיסמה)
+            </span>
+            <input type="text" data-title-state="awake" placeholder="הזן סיסמת גישה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              צהוב (מתחבר / מסנכרן)
+            </span>
+            <input type="text" data-title-state="building" placeholder="מתחבר ומאמת..." class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              ירוק (הצלחה / אושר)
+            </span>
+            <input type="text" data-title-state="success" placeholder="הגישה אושרה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
+              <span class="w-2 h-2 rounded-full bg-red-400"></span>
+              אדום (שגיאה)
+            </span>
+            <input type="text" data-title-state="error" placeholder="סיסמה שגויה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
+              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+              הכספת (מסך ראשי)
+            </span>
+            <input type="text" data-title-state="vault" placeholder="הכספת שלי" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
+          </label>
+        </div>
       </div>
 
       <!-- Add Record Form -->
@@ -223,10 +390,43 @@
         </button>
       </form>
 
-      <!-- Sync Status & Count -->
-      <div class="flex items-center justify-between text-xs text-zinc-400 px-1">
-        <span id="status-msg">מוכן</span>
-        <span id="records-count" dir="ltr" class="font-mono text-zinc-500">0 items</span>
+      <!-- Live Search & Backup Export Bar -->
+      <div class="flex items-center gap-2">
+        <input
+          type="search"
+          id="search-input"
+          placeholder="חיפוש מהיר ברשומות ובלוגים..."
+          class="flex-1 bg-zinc-900/70 border border-zinc-800/80 focus:border-zinc-600 rounded-full px-4 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none transition-colors"
+        />
+        <button
+          type="button"
+          id="import-json-btn"
+          class="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-medium text-zinc-300 shrink-0 transition-colors"
+        >
+          ייבוא JSON
+        </button>
+        <button
+          type="button"
+          id="export-json-btn"
+          class="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-medium text-zinc-300 shrink-0 transition-colors"
+        >
+          ייצוא JSON
+        </button>
+        <input type="file" id="import-json-file" accept=".json,application/json" class="hidden" />
+      </div>
+
+      <!-- Filter Pills & Records Count -->
+      <div class="flex items-center justify-between gap-2 text-xs text-zinc-400 px-1">
+        <div id="filter-bar" class="flex items-center gap-1.5">
+          <button type="button" data-filter="all" class="filter-btn px-3 py-1 rounded-full bg-zinc-800 text-zinc-100 font-medium transition-colors">הכל</button>
+          <button type="button" data-filter="entries" class="filter-btn px-3 py-1 rounded-full bg-zinc-900/70 hover:bg-zinc-800/80 text-zinc-400 transition-colors">רשומות</button>
+          <button type="button" data-filter="logs" class="filter-btn px-3 py-1 rounded-full bg-zinc-900/70 hover:bg-zinc-800/80 text-zinc-400 transition-colors">לוגים</button>
+          <button type="button" id="clear-logs-btn" class="px-2.5 py-1 rounded-full bg-zinc-900/50 hover:bg-red-950/60 hover:text-red-300 text-[11px] text-zinc-500 transition-colors">נקה לוגים</button>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <span id="status-msg" class="text-[11px] text-zinc-400"></span>
+          <span id="records-count" dir="ltr" class="font-mono text-zinc-500">0 items</span>
+        </div>
       </div>
 
       <!-- Items List -->
@@ -242,6 +442,102 @@
      */
     const SALTED_VAULT = {"salt":"PLACEHOLDER","iv":"PLACEHOLDER","cipher":"PLACEHOLDER"};
     let currentItems = [];
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    /**
+     * ============================================================================
+     * 1.5 TITLE MANAGER (STATE TITLES & DOCUMENT TITLE SYNC)
+     * ============================================================================
+     */
+    const DEFAULT_STATE_TITLES = {
+      initial: 'כספת נעולה',
+      awake: 'הזן סיסמת גישה',
+      building: 'מתחבר ומאמת...',
+      success: 'הגישה אושרה',
+      error: 'סיסמה שגויה',
+      ready: 'הכספת שלי',
+      vault: 'הכספת שלי'
+    };
+
+    const TitleManager = {
+      storageKey: 'vaultdb_state_titles_v1',
+      titles: { ...DEFAULT_STATE_TITLES },
+      currentState: 'initial',
+
+      init() {
+        try {
+          const saved = localStorage.getItem(this.storageKey);
+          if (saved) {
+            this.titles = { ...DEFAULT_STATE_TITLES, ...JSON.parse(saved) };
+          }
+        } catch (_) {}
+        this.syncInputs();
+        this.applyState('initial', true);
+      },
+
+      save() {
+        try {
+          localStorage.setItem(this.storageKey, JSON.stringify(this.titles));
+        } catch (_) {}
+      },
+
+      setTitle(stateKey, value) {
+        this.titles[stateKey] = value;
+        if (stateKey === 'vault') {
+          this.titles.ready = value;
+        }
+        this.save();
+        this.refreshDisplay();
+      },
+
+      reset() {
+        this.titles = { ...DEFAULT_STATE_TITLES };
+        this.save();
+        this.syncInputs();
+        this.refreshDisplay();
+      },
+
+      syncInputs() {
+        document.querySelectorAll('.title-state-input').forEach((input) => {
+          const key = input.dataset.titleState;
+          if (key && this.titles[key] !== undefined) {
+            input.value = this.titles[key];
+          }
+        });
+      },
+
+      applyState(stateName, immediate = false) {
+        this.currentState = stateName;
+        const text = this.titles[stateName] ?? '';
+        const lockTitleEl = document.getElementById('sphere-state-title');
+        const vaultHeaderEl = document.getElementById('vault-header-title');
+
+        if (vaultHeaderEl) {
+          vaultHeaderEl.textContent = this.titles.vault || '';
+        }
+
+        if (lockTitleEl) {
+          if (immediate || lockTitleEl.textContent === text) {
+            lockTitleEl.textContent = text;
+          } else {
+            lockTitleEl.classList.add('title-updating');
+            setTimeout(() => {
+              lockTitleEl.textContent = text;
+              lockTitleEl.classList.remove('title-updating');
+            }, 170);
+          }
+        }
+
+        const isUnlocked = !document.getElementById('unlocked-app-screen')?.classList.contains('hidden');
+        const activeTabTitle = isUnlocked ? (this.titles.vault || text) : text;
+        document.title = activeTabTitle || 'VaultDB';
+      },
+
+      refreshDisplay() {
+        this.applyState(this.currentState, true);
+      }
+    };
 
     const VaultDB = {
       endpoint: null,
@@ -289,9 +585,7 @@
       async read() {
         if (this.endpoint === 'demo://local-vault') {
           const cached = localStorage.getItem('vaultdb_demo_items');
-          return cached ? JSON.parse(cached) : [
-            { id: 1732387200000, text: 'מפתח הצפנה פעיל — מחובר ל-Worker', createdAt: new Date().toISOString() }
-          ];
+          return cached ? JSON.parse(cached) : [];
         }
         const res = await fetch(this.endpoint);
         const data = await res.json();
@@ -471,6 +765,7 @@
         this.bindEvents();
         this.resize();
         this.applyGlow('initial');
+        TitleManager.applyState('initial', true);
       }
 
       resize() {
@@ -502,6 +797,7 @@
       setState(nextState) {
         if (this.state === nextState) return;
         this.state = nextState;
+        TitleManager.applyState(nextState);
         const pal = PALETTES[nextState] || PALETTES.initial;
         this.targetRgb = pal.colors.map(hexToRgb);
         this.colorChangeSpinBoost = 4.5;
@@ -622,15 +918,16 @@
       }
 
       updatePhysics(dt, now) {
-        // 1. Intro Spawn ease-out cubic (450ms)
-        const spawnElapsed = Math.min(1, (now - this.spawnStart) / 450);
-        const introEase = 0.08 + 0.92 * (1 - Math.pow(1 - spawnElapsed, 3));
+        // 1. Intro Spawn ease-out quintic (520ms) for silkier emergence
+        const spawnElapsed = Math.min(1, (now - this.spawnStart) / 520);
+        const introEase = 0.06 + 0.94 * (1 - Math.pow(1 - spawnElapsed, 5));
 
-        // 2. Awaken Rebirth choreography
+        // 2. Awaken Rebirth choreography (smooth frame-rate independent lerp)
         if (this.rebirthPhase === 'imploding') {
-          this.rebirthScale += (0.58 - this.rebirthScale) * Math.min(1, dt * 16);
-          this.yaw += dt * 7.5;
-          if (this.rebirthScale <= 0.61) {
+          const kImplode = 1 - Math.exp(-15 * dt);
+          this.rebirthScale += (0.58 - this.rebirthScale) * kImplode;
+          this.yaw += dt * 7.2;
+          if (this.rebirthScale <= 0.605) {
             this.rebirthPhase = 'spawning';
             if (typeof this.onRebirthMidpoint === 'function') {
               this.onRebirthMidpoint();
@@ -638,15 +935,16 @@
             }
           }
         } else if (this.rebirthPhase === 'spawning') {
-          this.rebirthScale += (1.0 - this.rebirthScale) * Math.min(1, dt * 11);
-          if (Math.abs(1.0 - this.rebirthScale) < 0.005) {
+          const kSpawn = 1 - Math.exp(-10.5 * dt);
+          this.rebirthScale += (1.0 - this.rebirthScale) * kSpawn;
+          if (Math.abs(1.0 - this.rebirthScale) < 0.003) {
             this.rebirthScale = 1.0;
             this.rebirthPhase = 'none';
           }
         }
 
-        // 3. Smooth color interpolation toward target state palette
-        const lerpFactor = Math.min(1, dt * 6.5);
+        // 3. Smooth exponential color interpolation toward target state palette
+        const lerpFactor = 1 - Math.exp(-6.5 * dt);
         for (let i = 0; i < 5; i++) {
           for (let c = 0; c < 3; c++) {
             this.currentRgb[i][c] += (this.targetRgb[i][c] - this.currentRgb[i][c]) * lerpFactor;
@@ -658,22 +956,23 @@
         const breathWave = Math.sin(this.breathPhase) + 0.25 * Math.sin(2 * this.breathPhase - 0.8);
         const breathScale = 1 + breathWave * this.breathAmp;
 
-        // 5. Underdamped spring squish (stiffness 0.02, damping 0.86 per step)
+        // 5. Underdamped spring squish (frame-rate independent damping)
         const targetS = this.targetPressScale + this.burstPopImpulse;
-        this.burstPopImpulse *= 0.82;
-        const force = (targetS - this.springScale) * 0.02 * 60 * dt;
-        this.springVel = (this.springVel + force) * Math.pow(0.86, dt * 60);
+        this.burstPopImpulse *= Math.exp(-11.5 * dt);
+        const force = (targetS - this.springScale) * 1.2 * dt;
+        this.springVel = (this.springVel + force) * Math.exp(-9.0 * dt);
         this.springScale += this.springVel;
 
         // 6. Rotation & momentum inertia
         const stateSpinMult = this.state === 'building' ? 2.2 : 1.0;
         if (!this.isDragging) {
-          this.yaw += (0.32 * stateSpinMult + this.colorChangeSpinBoost) * dt + this.velYaw;
-          this.pitch = Math.max(-1.45, Math.min(1.45, this.pitch + this.velPitch));
-          this.velYaw *= Math.pow(0.94, dt * 60);
-          this.velPitch *= Math.pow(0.94, dt * 60);
+          this.yaw += (0.32 * stateSpinMult + this.colorChangeSpinBoost) * dt + this.velYaw * (60 * dt);
+          this.pitch = Math.max(-1.45, Math.min(1.45, this.pitch + this.velPitch * (60 * dt)));
+          const dragDecay = Math.exp(-3.8 * dt);
+          this.velYaw *= dragDecay;
+          this.velPitch *= dragDecay;
         }
-        this.colorChangeSpinBoost *= Math.pow(0.92, dt * 60);
+        this.colorChangeSpinBoost *= Math.exp(-5.0 * dt);
 
         return introEase * this.rebirthScale * breathScale * this.springScale;
       }
@@ -810,7 +1109,8 @@
         for (let i = this.shockwaves.length - 1; i >= 0; i--) {
           const sw = this.shockwaves[i];
           sw.r += sw.speed;
-          sw.alpha *= 0.93;
+          sw.speed *= 0.975;
+          sw.alpha *= 0.935;
           if (sw.r >= sw.maxR || sw.alpha <= 0.02) {
             this.shockwaves.splice(i, 1);
             continue;
@@ -863,6 +1163,20 @@
         this.ctx.drawImage(this.offCanvas, -cw / 2, -ch / 2, cw, ch);
         this.ctx.restore();
 
+        // Mirror live shader onto the mini sphere inside the unlocked vault header
+        if (miniSphereCanvas && miniSphereCtx) {
+          const mw = miniSphereCanvas.width;
+          const mh = miniSphereCanvas.height;
+          miniSphereCtx.clearRect(0, 0, mw, mh);
+          miniSphereCtx.save();
+          miniSphereCtx.translate(mw / 2, mh / 2);
+          miniSphereCtx.scale(0.92 + (totalScale - 1) * 0.45, 0.92 + (totalScale - 1) * 0.45);
+          miniSphereCtx.imageSmoothingEnabled = true;
+          miniSphereCtx.imageSmoothingQuality = 'high';
+          miniSphereCtx.drawImage(this.offCanvas, -mw / 2, -mh / 2, mw, mh);
+          miniSphereCtx.restore();
+        }
+
         this.renderBursts();
         requestAnimationFrame((t) => this.tick(t));
       }
@@ -878,6 +1192,33 @@
      * ============================================================================
      */
     let sphere;
+    let miniSphereCanvas;
+    let miniSphereCtx;
+
+    function initMiniSphere() {
+      miniSphereCanvas = document.getElementById('miniLiquidSphere');
+      if (!miniSphereCanvas) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      miniSphereCanvas.width = Math.round(32 * dpr);
+      miniSphereCanvas.height = Math.round(32 * dpr);
+      miniSphereCtx = miniSphereCanvas.getContext('2d', { alpha: true });
+    }
+
+    function copyToClipboard(text, btnEl) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        const prev = btnEl.textContent;
+        btnEl.textContent = 'הועתק';
+        setTimeout(() => { btnEl.textContent = prev; }, 1100);
+      } catch (_) {}
+      document.body.removeChild(textarea);
+    }
 
     function revealPasswordPill() {
       const form = document.getElementById('glass-sphere-form');
@@ -889,9 +1230,13 @@
       body.classList.add('bg-[#0F0F0F]');
       backdrop.classList.add('opacity-0');
 
-      form.classList.remove('pill-hidden');
-      form.classList.add('pill-visible');
-      setTimeout(() => input.focus(), 180);
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          form.classList.remove('pill-hidden');
+          form.classList.add('pill-visible');
+          setTimeout(() => input.focus({ preventScroll: true }), 260);
+        }, 110);
+      });
     }
 
     function resetToDormantLock() {
@@ -899,20 +1244,59 @@
       const input = document.getElementById('glass-sphere-input');
       const body = document.getElementById('app-canvas');
       const backdrop = document.getElementById('dormant-backdrop');
+      const unlockedScreen = document.getElementById('unlocked-app-screen');
+      const lockScreen = document.getElementById('vault-lock-screen');
 
-      input.value = '';
-      form.classList.remove('pill-visible', 'pill-shake');
-      form.classList.add('pill-hidden');
+      unlockedScreen.classList.remove('vault-screen-visible');
+      unlockedScreen.classList.add('vault-screen-collapsing');
 
-      body.classList.remove('bg-[#0F0F0F]');
-      body.classList.add('bg-[#050507]');
-      backdrop.classList.remove('opacity-0');
+      setTimeout(() => {
+        input.value = '';
+        form.classList.remove('pill-visible', 'pill-shake', 'pill-connecting');
+        form.classList.add('pill-hidden');
 
-      document.getElementById('unlocked-app-screen').classList.add('hidden');
-      document.getElementById('vault-lock-screen').classList.remove('hidden');
+        body.classList.remove('bg-[#0F0F0F]');
+        body.classList.add('bg-[#050507]');
+        backdrop.classList.remove('opacity-0');
 
-      sphere.resize();
-      sphere.setState('initial');
+        unlockedScreen.classList.add('hidden', 'vault-screen-hidden');
+        unlockedScreen.classList.remove('vault-screen-collapsing');
+
+        lockScreen.classList.remove('hidden');
+        sphere.spawnStart = performance.now();
+        sphere.resize();
+        sphere.setState('initial');
+      }, 520);
+    }
+
+    function resetToDormantLock() {
+      const form = document.getElementById('glass-sphere-form');
+      const input = document.getElementById('glass-sphere-input');
+      const body = document.getElementById('app-canvas');
+      const backdrop = document.getElementById('dormant-backdrop');
+      const unlockedScreen = document.getElementById('unlocked-app-screen');
+      const lockScreen = document.getElementById('vault-lock-screen');
+
+      unlockedScreen.classList.remove('vault-screen-visible');
+      unlockedScreen.classList.add('vault-screen-collapsing');
+
+      setTimeout(() => {
+        input.value = '';
+        form.classList.remove('pill-visible', 'pill-shake', 'pill-connecting');
+        form.classList.add('pill-hidden');
+
+        body.classList.remove('bg-[#0F0F0F]');
+        body.classList.add('bg-[#050507]');
+        backdrop.classList.remove('opacity-0');
+
+        unlockedScreen.classList.add('hidden', 'vault-screen-hidden');
+        unlockedScreen.classList.remove('vault-screen-collapsing');
+
+        lockScreen.classList.remove('hidden');
+        sphere.spawnStart = performance.now();
+        sphere.resize();
+        sphere.setState('initial');
+      }, 450);
     }
 
     function formatTimestamp(iso) {
@@ -929,82 +1313,380 @@
       const list = document.getElementById('items-list');
       const countEl = document.getElementById('records-count');
       list.innerHTML = '';
-      countEl.textContent = `${currentItems.length} ${currentItems.length === 1 ? 'item' : 'items'}`;
 
-      if (currentItems.length === 0) {
+      const q = searchQuery.trim().toLowerCase();
+      const filtered = currentItems.filter((item) => {
+        const isLoginLog = typeof item === 'object' && item.type === 'login_log';
+        if (activeFilter === 'logs' && !isLoginLog) return false;
+        if (activeFilter === 'entries' && isLoginLog) return false;
+        if (q) {
+          const text = (typeof item === 'object' ? (item.text || JSON.stringify(item)) : String(item)).toLowerCase();
+          if (!text.includes(q)) return false;
+        }
+        return true;
+      });
+
+      countEl.textContent = `${filtered.length} / ${currentItems.length} items`;
+
+      if (filtered.length === 0) {
         const empty = document.createElement('li');
         empty.className = 'py-8 text-center text-xs text-zinc-500';
-        empty.textContent = 'הכספת ריקה. הוסף רשומה ראשונה למעלה.';
+        empty.textContent = activeFilter === 'all'
+          ? 'הכספת ריקה. הוסף רשומה ראשונה למעלה.'
+          : 'אין פריטים להצגה בסינון הנוכחי.';
         list.appendChild(empty);
         return;
       }
 
-      [...currentItems].reverse().forEach((item) => {
-        const li = document.createElement('li');
-        li.className = 'px-4 py-3 rounded-2xl bg-zinc-900 border border-zinc-800/80 text-xs sm:text-sm text-zinc-200 flex items-center justify-between gap-3 transition-colors hover:border-zinc-700/80';
+      [...filtered].reverse().forEach((item) => {
+        const isLoginLog = typeof item === 'object' && item.type === 'login_log';
+      const displayText = typeof item === 'object' ? (item.text || JSON.stringify(item)) : String(item);
+      const itemId = typeof item === 'object' && item.id != null ? item.id : null;
+      const isPinned = typeof item === 'object' && Boolean(item.pinned);
 
-        const textSpan = document.createElement('span');
-        textSpan.className = 'break-words leading-relaxed';
-        textSpan.textContent = typeof item === 'object' ? (item.text || JSON.stringify(item)) : String(item);
+      const li = document.createElement('li');
+      li.className = isLoginLog
+        ? 'px-4 py-2.5 rounded-2xl bg-zinc-900/50 border border-zinc-800/50 text-xs text-zinc-400 flex items-center justify-between gap-3'
+        : isPinned
+          ? 'px-4 py-3 rounded-2xl bg-zinc-900 border border-amber-500/35 text-xs sm:text-sm text-zinc-100 flex items-center justify-between gap-3 transition-colors hover:border-amber-400/50'
+          : 'px-4 py-3 rounded-2xl bg-zinc-900 border border-zinc-800/80 text-xs sm:text-sm text-zinc-200 flex items-center justify-between gap-3 transition-colors hover:border-zinc-700/80';
 
-        const timeSpan = document.createElement('span');
-        timeSpan.dir = 'ltr';
-        timeSpan.className = 'font-mono text-[11px] text-zinc-500 shrink-0';
-        timeSpan.textContent = typeof item === 'object' ? formatTimestamp(item.createdAt) : '';
+      const textSpan = document.createElement('span');
+      textSpan.className = 'break-words leading-relaxed flex-1';
+      textSpan.textContent = isPinned ? `📌 ${displayText}` : displayText;
+
+      const actionsWrap = document.createElement('div');
+      actionsWrap.className = 'flex items-center gap-2 shrink-0';
+
+      const timeSpan = document.createElement('span');
+      timeSpan.dir = 'ltr';
+      timeSpan.className = 'font-mono text-[11px] text-zinc-500';
+      timeSpan.textContent = typeof item === 'object' ? formatTimestamp(item.createdAt) : '';
+      actionsWrap.appendChild(timeSpan);
+
+      if (!isLoginLog) {
+        if (itemId != null) {
+          const pinBtn = document.createElement('button');
+          pinBtn.type = 'button';
+          pinBtn.className = isPinned
+            ? 'px-2.5 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/30 text-[11px] text-amber-200 transition-colors'
+            : 'px-2.5 py-1 rounded-full bg-zinc-800/70 hover:bg-zinc-700 text-[11px] text-zinc-300 transition-colors';
+          pinBtn.textContent = isPinned ? 'בטל נעיצה' : 'נעץ';
+          pinBtn.addEventListener('click', async () => {
+            currentItems = currentItems.map((entry) =>
+              (typeof entry === 'object' && entry.id === itemId)
+                ? { ...entry, pinned: !entry.pinned }
+                : entry
+            );
+            renderItems();
+            if (!VaultDB.endpoint) return;
+            sphere.setState('building');
+            const status = document.getElementById('status-msg');
+            if (status) status.textContent = 'מעדכן נעיצה...';
+            try {
+              await VaultDB.save(currentItems);
+              sphere.setState('success');
+              if (status) status.textContent = 'נשמר בהצלחה ✓';
+              setTimeout(() => sphere.setState('ready'), 900);
+            } catch (err) {
+              sphere.setState('error');
+              if (status) status.textContent = 'שגיאה בשמירה: ' + err.message;
+            }
+          });
+          actionsWrap.appendChild(pinBtn);
+        }
+
+        if (itemId != null) {
+            const editBtn = document.createElement('button');
+            editBtn.type = 'button';
+            editBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-800/70 hover:bg-zinc-700 text-[11px] text-zinc-300 transition-colors';
+            editBtn.textContent = 'ערוך';
+            editBtn.addEventListener('click', () => {
+              if (li.querySelector('.inline-edit-input')) return;
+              const editInput = document.createElement('input');
+              editInput.type = 'text';
+              editInput.value = displayText;
+              editInput.className = 'inline-edit-input flex-1 bg-zinc-950 border border-zinc-700 rounded-full px-3 py-1 text-xs text-zinc-100 focus:outline-none';
+
+              const saveEditBtn = document.createElement('button');
+              saveEditBtn.type = 'button';
+              saveEditBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-950 text-[11px] font-medium shrink-0';
+              saveEditBtn.textContent = 'עדכן';
+
+              const commitEdit = async () => {
+                const updatedText = editInput.value.trim();
+                if (!updatedText || updatedText === displayText) {
+                  renderItems();
+                  return;
+                }
+                currentItems = currentItems.map((entry) =>
+                  (typeof entry === 'object' && entry.id === itemId)
+                    ? { ...entry, text: updatedText, updatedAt: new Date().toISOString() }
+                    : entry
+                );
+                renderItems();
+                if (!VaultDB.endpoint) return;
+                sphere.setState('building');
+                document.getElementById('status-msg').textContent = 'מעדכן רשומה...';
+                try {
+                  await VaultDB.save(currentItems);
+                  sphere.setState('success');
+                  document.getElementById('status-msg').textContent = 'עודכן ב-data.json ✓';
+                  setTimeout(() => sphere.setState('ready'), 900);
+                } catch (err) {
+                  sphere.setState('error');
+                  document.getElementById('status-msg').textContent = 'שגיאה בעדכון: ' + err.message;
+                }
+              };
+
+              saveEditBtn.addEventListener('click', commitEdit);
+              editInput.addEventListener('keydown', (ev) => {
+                if (ev.key === 'Enter') {
+                  ev.preventDefault();
+                  commitEdit();
+                } else if (ev.key === 'Escape') {
+                  renderItems();
+                }
+              });
+
+              textSpan.replaceWith(editInput);
+              actionsWrap.innerHTML = '';
+              actionsWrap.appendChild(saveEditBtn);
+              editInput.focus();
+            });
+            actionsWrap.appendChild(editBtn);
+          }
+
+          const copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-[11px] text-zinc-300 transition-colors';
+          copyBtn.textContent = 'העתק';
+          copyBtn.addEventListener('click', () => copyToClipboard(displayText, copyBtn));
+          actionsWrap.appendChild(copyBtn);
+
+          if (itemId != null) {
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-800/60 hover:bg-red-950/80 hover:text-red-300 text-[11px] text-zinc-400 transition-colors';
+            delBtn.textContent = 'מחק';
+            delBtn.addEventListener('click', async () => {
+              currentItems = currentItems.filter((entry) => !(typeof entry === 'object' && entry.id === itemId));
+              renderItems();
+              if (!VaultDB.endpoint) return;
+              sphere.setState('building');
+              document.getElementById('status-msg').textContent = 'מסנכרן מחיקה...';
+              try {
+                await VaultDB.save(currentItems);
+                sphere.setState('success');
+                document.getElementById('status-msg').textContent = 'נשמר בהצלחה ✓';
+                setTimeout(() => sphere.setState('ready'), 900);
+              } catch (err) {
+                sphere.setState('error');
+                document.getElementById('status-msg').textContent = 'שגיאה בשמירה: ' + err.message;
+              }
+            });
+            actionsWrap.appendChild(delBtn);
+          }
+        }
 
         li.appendChild(textSpan);
-        li.appendChild(timeSpan);
+        li.appendChild(actionsWrap);
         list.appendChild(li);
       });
     }
 
+    /**
+     * Appends a login audit entry to currentItems and syncs it to data.json in the background
+     */
+    function logUserLogin() {
+      if (!VaultDB.endpoint) return;
+      const now = new Date();
+      const loginLog = {
+        id: Date.now(),
+        type: 'login_log',
+        text: `התחברות למערכת (${now.toLocaleDateString('he-IL')})`,
+        userAgent: navigator.userAgent,
+        createdAt: now.toISOString()
+      };
+
+      currentItems = [...currentItems, loginLog];
+      VaultDB.save(currentItems, 400).catch((err) => {
+        console.warn('Login audit log sync failed:', err);
+      });
+    }
+
     window.onload = function () {
+      TitleManager.init();
       sphere = new LiquidSphereController();
+      initMiniSphere();
       sphere.start();
+
+      const titleManagerPanel = document.getElementById('title-manager-panel');
+      document.getElementById('toggle-titles-btn')?.addEventListener('click', () => {
+        titleManagerPanel?.classList.toggle('hidden');
+      });
+
+      document.querySelectorAll('.title-state-input').forEach((input) => {
+        input.addEventListener('input', (e) => {
+          const stateKey = e.target.dataset.titleState;
+          if (stateKey) {
+            TitleManager.setTitle(stateKey, e.target.value);
+          }
+        });
+      });
+
+      document.getElementById('reset-titles-btn')?.addEventListener('click', () => {
+        TitleManager.reset();
+        const status = document.getElementById('status-msg');
+        if (status) status.textContent = 'הכותרות אופסו לברירת מחדל ✓';
+      });
+
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activeFilter = btn.dataset.filter;
+          document.querySelectorAll('.filter-btn').forEach((b) => {
+            const isSelected = b.dataset.filter === activeFilter;
+            b.className = isSelected
+              ? 'filter-btn px-3 py-1 rounded-full bg-zinc-800 text-zinc-100 font-medium transition-colors'
+              : 'filter-btn px-3 py-1 rounded-full bg-zinc-900/70 hover:bg-zinc-800/80 text-zinc-400 transition-colors';
+          });
+          renderItems();
+        });
+      });
+
+      document.getElementById('search-input')?.addEventListener('input', (e) => {
+        searchQuery = e.target.value || '';
+        renderItems();
+      });
+
+      document.getElementById('clear-logs-btn')?.addEventListener('click', async () => {
+        const hasLogs = currentItems.some((item) => typeof item === 'object' && item.type === 'login_log');
+        if (!hasLogs) return;
+        currentItems = currentItems.filter((item) => !(typeof item === 'object' && item.type === 'login_log'));
+        renderItems();
+        if (!VaultDB.endpoint) return;
+        sphere.setState('building');
+        const status = document.getElementById('status-msg');
+        if (status) status.textContent = 'מנקה היסטוריית לוגים...';
+        try {
+          await VaultDB.save(currentItems);
+          sphere.setState('success');
+          if (status) status.textContent = 'הלוגים נוקו ✓';
+          setTimeout(() => sphere.setState('ready'), 900);
+        } catch (err) {
+          sphere.setState('error');
+          if (status) status.textContent = 'שגיאה בניקוי לוגים: ' + err.message;
+        }
+      });
+
+      const importFileInput = document.getElementById('import-json-file');
+      document.getElementById('import-json-btn')?.addEventListener('click', () => {
+        importFileInput?.click();
+      });
+
+      importFileInput?.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const status = document.getElementById('status-msg');
+        try {
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          if (!Array.isArray(parsed)) throw new Error('קובץ JSON חייב להכיל מערך רשומות');
+          currentItems = parsed;
+          renderItems();
+          if (VaultDB.endpoint) {
+            sphere.setState('building');
+            if (status) status.textContent = 'מייבא ומסנכרן...';
+            await VaultDB.save(currentItems);
+            sphere.setState('success');
+            setTimeout(() => sphere.setState('ready'), 900);
+          }
+          if (status) status.textContent = 'יובא בהצלחה ✓';
+        } catch (err) {
+          sphere.setState('error');
+          if (status) status.textContent = 'שגיאה בייבוא: ' + err.message;
+        } finally {
+          e.target.value = '';
+        }
+      });
+
+      document.getElementById('export-json-btn')?.addEventListener('click', () => {
+        try {
+          const blob = new Blob([JSON.stringify(currentItems, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `vault-backup-${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          const status = document.getElementById('status-msg');
+          if (status) status.textContent = 'גיבוי JSON הורד ✓';
+        } catch (err) {
+          const status = document.getElementById('status-msg');
+          if (status) status.textContent = 'שגיאה בייצוא: ' + err.message;
+        }
+      });
 
       const lockForm = document.getElementById('glass-sphere-form');
       const passwordInput = document.getElementById('glass-sphere-input');
 
-      lockForm.addEventListener('submit', async (e) => {
+      lockForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const pwd = passwordInput.value;
         if (!pwd) return;
 
         lockForm.classList.remove('pill-shake');
+        lockForm.classList.add('pill-connecting');
+        passwordInput.blur();
         sphere.setState('building');
 
         try {
           currentItems = await VaultDB.unlock(pwd);
+          logUserLogin();
           passwordInput.value = '';
+          lockForm.classList.remove('pill-connecting', 'pill-visible');
+          lockForm.classList.add('pill-hidden');
           sphere.setState('success');
 
           // Hold emerald success burst briefly before transitioning to unlocked workspace
           setTimeout(() => {
             sphere.setState('ready');
             document.getElementById('vault-lock-screen').classList.add('hidden');
-            document.getElementById('unlocked-app-screen').classList.remove('hidden');
+            const unlockedScreen = document.getElementById('unlocked-app-screen');
+            unlockedScreen.classList.remove('hidden', 'vault-screen-visible');
+            unlockedScreen.classList.add('vault-screen-hidden');
             renderItems();
             document.getElementById('status-msg').textContent = 'מסונכרן ומאובטח';
+            TitleManager.applyState('vault', true);
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                unlockedScreen.classList.remove('vault-screen-hidden');
+                unlockedScreen.classList.add('vault-screen-visible');
+              });
+            });
           }, 820);
         } catch {
+          lockForm.classList.remove('pill-connecting');
           sphere.setState('error');
           void lockForm.offsetWidth; // trigger reflow for shake replay
           lockForm.classList.add('pill-shake');
+          passwordInput.focus();
           passwordInput.select();
         }
       });
 
-      document.getElementById('lock-btn').addEventListener('click', () => {
+      document.getElementById('lock-btn')?.addEventListener('click', () => {
         VaultDB.lock();
         currentItems = [];
         resetToDormantLock();
       });
 
-      document.getElementById('entry-form').addEventListener('submit', async (e) => {
+      document.getElementById('entry-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const input = document.getElementById('entry-input');
         const status = document.getElementById('status-msg');
-        const dot = document.getElementById('status-orb-dot');
         const text = input.value.trim();
         if (!text || !VaultDB.endpoint) return;
 
@@ -1013,19 +1695,17 @@
         input.value = '';
         renderItems();
 
-        status.textContent = 'מאחד שינויים ושומר...';
-        dot.className = 'w-3 h-3 rounded-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.8)] transition-colors duration-300';
+        sphere.setState('building');
+        if (status) status.textContent = 'מאחד שינויים ושומר...';
 
         try {
           await VaultDB.save(currentItems);
-          status.textContent = 'נשמר בהצלחה ✓';
-          dot.className = 'w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)] transition-colors duration-300';
-          setTimeout(() => {
-            dot.className = 'w-3 h-3 rounded-full bg-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)] transition-colors duration-500';
-          }, 1500);
+          sphere.setState('success');
+          if (status) status.textContent = 'נשמר בהצלחה ✓';
+          setTimeout(() => sphere.setState('ready'), 900);
         } catch (err) {
-          status.textContent = 'שגיאה בשמירה: ' + err.message;
-          dot.className = 'w-3 h-3 rounded-full bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)] transition-colors duration-300';
+          sphere.setState('error');
+          if (status) status.textContent = 'שגיאה בשמירה: ' + err.message;
         }
       });
     };
