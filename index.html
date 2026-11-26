@@ -1691,7 +1691,7 @@
         if (!text || !VaultDB.endpoint) return;
 
         // Optimistic UI update
-        currentItems = [...currentItems, { id: Date.now(), text, createdAt: new Date().toISOString() }];
+        currentItems = [...currentItems, { id: Date.now(), text, createdAt: new Date().toISOString(), test: 111 }];
         input.value = '';
         renderItems();
 
