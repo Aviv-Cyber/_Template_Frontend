@@ -22,6 +22,18 @@
     };
   </script>
   <style>
+    :root {
+      /* iOS 27 User Transparency Slider Token [0.0 ultra-clear lensing -> 1.0 frosted tint] */
+      --glass-tint-level: 0.38;
+      --glass-blur: calc(18px + var(--glass-tint-level) * 16px);
+      --glass-saturate: calc(175% + var(--glass-tint-level) * 45%);
+      --glass-bg-top: rgba(255, 255, 255, calc(0.11 + var(--glass-tint-level) * 0.16));
+      --glass-bg-mid: rgba(255, 255, 255, calc(0.03 + var(--glass-tint-level) * 0.08));
+      --glass-bg-bot: rgba(255, 255, 255, calc(0.07 + var(--glass-tint-level) * 0.12));
+      --glass-stroke: rgba(255, 255, 255, calc(0.24 + var(--glass-tint-level) * 0.24));
+      --glass-specular: rgba(255, 255, 255, calc(0.52 + var(--glass-tint-level) * 0.26));
+    }
+
     * {
       -webkit-tap-highlight-color: transparent;
       box-sizing: border-box;
@@ -35,12 +47,21 @@
       overflow-x: hidden;
       background-color: #050507;
       color: #F4F4F5;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
     }
 
     /* Prevent iOS Safari zoom on input focus */
     input {
       font-size: 16px !important;
+    }
+
+    /* Living optical backdrop behind unlocked glass chrome (never stacking glass on glass) */
+    .liquid-ambient-stage {
+      background:
+        radial-gradient(circle at 18% 14%, rgba(56, 189, 248, 0.13) 0%, transparent 44%),
+        radial-gradient(circle at 82% 24%, rgba(168, 85, 247, 0.11) 0%, transparent 46%),
+        radial-gradient(circle at 50% 88%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+        #08090C;
     }
 
     /* Radial ambient halo behind the sphere */
@@ -62,7 +83,139 @@
       transform: translate3d(0, -4px, 0);
     }
 
-    /* Apple iOS 26 Liquid Glass Pill */
+    /* Apple Liquid Glass Material (.glassEffect(.regular)) */
+    .liquid-glass {
+      position: relative;
+      background: linear-gradient(
+        145deg,
+        var(--glass-bg-top) 0%,
+        var(--glass-bg-mid) 48%,
+        var(--glass-bg-bot) 100%
+      );
+      border: 1px solid var(--glass-stroke);
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) contrast(108%);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) contrast(108%);
+      box-shadow:
+        inset 0 1.5px 1.5px var(--glass-specular),
+        inset 0 -1px 1.5px rgba(255, 255, 255, 0.12),
+        0 16px 38px rgba(0, 0, 0, 0.44);
+    }
+
+    /* Interactive pointer-tracking specular lensing (.interactive(true)) */
+    .liquid-glass-interactive {
+      overflow: hidden;
+      transition:
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+    }
+
+    .liquid-glass-interactive::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: radial-gradient(
+        130px circle at var(--gx, 50%) var(--gy, 20%),
+        rgba(255, 255, 255, 0.26),
+        transparent 70%
+      );
+      opacity: var(--g-hover, 0);
+      transition: opacity 0.25s ease;
+    }
+
+    .liquid-glass-interactive:hover {
+      --g-hover: 1;
+      border-color: rgba(255, 255, 255, 0.46);
+    }
+
+    .liquid-glass-interactive:active {
+      transform: scale(0.97);
+    }
+
+    /* Prominent Tinted Glass CTA (.buttonStyle(.glassProminent)) */
+    .liquid-glass-prominent {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(
+        145deg,
+        rgba(56, 189, 248, 0.42) 0%,
+        rgba(2, 132, 199, 0.26) 55%,
+        rgba(14, 165, 233, 0.36) 100%
+      );
+      border: 1px solid rgba(186, 230, 253, 0.58);
+      backdrop-filter: blur(20px) saturate(200%);
+      -webkit-backdrop-filter: blur(20px) saturate(200%);
+      box-shadow:
+        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.72),
+        inset 0 -1px 2px rgba(2, 132, 199, 0.35),
+        0 10px 26px rgba(2, 132, 199, 0.28);
+      color: #F0F9FF;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .liquid-glass-prominent:hover {
+      filter: brightness(1.08);
+      box-shadow:
+        inset 0 1.5px 2px rgba(255, 255, 255, 0.85),
+        0 12px 30px rgba(56, 189, 248, 0.36);
+    }
+
+    .liquid-glass-prominent:active {
+      transform: scale(0.95);
+    }
+
+    /* Grouped Glass Container (GlassEffectContainer — merges sibling controls into unified capsule) */
+    .glass-effect-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px;
+      border-radius: 9999px;
+      background: linear-gradient(
+        145deg,
+        var(--glass-bg-top) 0%,
+        var(--glass-bg-mid) 52%,
+        var(--glass-bg-bot) 100%
+      );
+      border: 1px solid var(--glass-stroke);
+      backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+      box-shadow:
+        inset 0 1px 1.5px var(--glass-specular),
+        0 12px 30px rgba(0, 0, 0, 0.36);
+    }
+
+    .glass-segment-btn {
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(244, 244, 245, 0.68);
+      transition: background-color 0.24s ease, color 0.24s ease, box-shadow 0.24s ease, transform 0.18s ease;
+    }
+
+    .glass-segment-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-segment-btn:active {
+      transform: scale(0.95);
+    }
+
+    .glass-segment-btn.is-active {
+      color: #FFFFFF;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.1));
+      box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.62),
+        0 4px 12px rgba(0, 0, 0, 0.24);
+    }
+
+    /* Apple iOS 26 Liquid Glass Password Pill (outerRadius: 9999px, padding: 5px -> concentric inner capsule) */
     .glass-sphere-form {
       background: linear-gradient(
         135deg,
@@ -119,40 +272,6 @@
       80% { transform: translate3d(calc(-50% + 4px), 0px, 0); }
     }
 
-    .glass-sphere-form.pill-hidden {
-      opacity: 0;
-      filter: blur(8px);
-      pointer-events: none;
-      transform: translate(-50%, 6px) scale(0.95);
-    }
-
-    .glass-sphere-form.pill-visible {
-      opacity: 1;
-      filter: blur(0px);
-      pointer-events: auto;
-      transform: translate(-50%, 0px) scale(1);
-    }
-
-    .glass-sphere-form.pill-shake {
-      animation: pillShake 0.44s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-      border-color: rgba(248, 113, 113, 0.75);
-    }
-
-    .glass-sphere-form.pill-connecting {
-      filter: blur(5px);
-      opacity: 0.55;
-      pointer-events: none;
-      transform: translate(-50%, 0px) scale(0.97);
-    }
-
-    @keyframes pillShake {
-      0%, 100% { transform: translate(-50%, 0px); }
-      20% { transform: translate(calc(-50% - 7px), 0px); }
-      40% { transform: translate(calc(-50% + 7px), 0px); }
-      60% { transform: translate(calc(-50% - 4px), 0px); }
-      80% { transform: translate(calc(-50% + 4px), 0px); }
-    }
-
     .glass-sphere-input {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.22);
@@ -170,19 +289,27 @@
       border-color: rgba(255, 255, 255, 0.55);
     }
 
-    .glass-submit-btn {
-      background: rgba(255, 255, 255, 0.22);
-      border: 1px solid rgba(255, 255, 255, 0.38);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65);
-      transition: transform 0.15s ease, background-color 0.2s ease;
+    /* Non-glass dense content rows (Anti-pattern compliance: never stack glass on glass) */
+    .vault-content-row {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .glass-submit-btn:hover {
-      background: rgba(255, 255, 255, 0.32);
+    .vault-content-row:hover {
+      background: rgba(255, 255, 255, 0.055);
+      border-color: rgba(255, 255, 255, 0.14);
     }
 
-    .glass-submit-btn:active {
-      transform: scale(0.92);
+    .vault-content-row.is-pinned {
+      background: rgba(251, 191, 36, 0.07);
+      border-color: rgba(251, 191, 36, 0.28);
+    }
+
+    .vault-content-row.is-log {
+      background: rgba(255, 255, 255, 0.018);
+      border-color: rgba(255, 255, 255, 0.045);
     }
 
     /* Smooth fade-in reveal for the unlocked vault workspace */
@@ -218,26 +345,21 @@
         filter 0.48s cubic-bezier(0.32, 0.72, 0, 1);
     }
 
-    .vault-screen-visible {
-      opacity: 1;
-      filter: blur(0px);
-      transform: translateY(0px) scale(1);
-      pointer-events: auto;
-      transition:
-        opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        filter 0.6s ease;
+    /* Accessibility Overrides: Reduce Transparency & Reduce Motion */
+    @media (prefers-reduced-transparency: reduce) {
+      .liquid-glass, .glass-effect-container, .glass-sphere-form {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: #18181B !important;
+        border-color: #3F3F46 !important;
+      }
     }
 
-    .vault-screen-collapsing {
-      opacity: 0;
-      filter: blur(12px);
-      transform: scale(0.84);
-      pointer-events: none;
-      transition:
-        opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-        transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-        filter 0.4s ease;
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
     }
 
     /* Subtle custom scrollbar for unlocked items */
@@ -248,7 +370,7 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(113, 113, 122, 0.35);
+      background: rgba(255, 255, 255, 0.18);
       border-radius: 9999px;
     }
   </style>
@@ -268,170 +390,191 @@
       <!-- Subtle radial ambient halo -->
       <div id="sphere-halo" class="sphere-ambient-halo absolute -inset-12 rounded-full blur-2xl pointer-events-none transition-all duration-700"></div>
 
-      <!-- Oversized Burst & Shockwave Canvas Overlay (never clips) -->
-      <canvas id="burstCanvas" class="pointer-events-none z-20" style="position: absolute; inset: -45%; width: 190%; height: 190%;"></canvas>
+      <!-- Main Interactive Liquid Sphere Canvas -->
+      <canvas id="liquidSphere" class="relative z-10 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
 
-      <!-- Main Interactive 3D-Shaded Liquid Sphere Canvas -->
-      <canvas id="liquidSphere" class="relative z-30 w-full h-full rounded-full cursor-grab active:cursor-grabbing"></canvas>
+      <!-- Oversized Burst Canvas Overlay for Shockwaves & Particles -->
+      <canvas id="burstCanvas" class="pointer-events-none absolute z-20" style="inset: -45%; width: 190%; height: 190%;"></canvas>
 
-      <!-- Liquid Glass Password Input Pill -->
-      <form id="glass-sphere-form" class="glass-sphere-form pill-hidden absolute top-full mt-6 left-1/2 w-full max-w-[145px] flex items-center rounded-full p-1 z-40" autocomplete="off">
+      <!-- Apple iOS 26 Liquid Glass Password Pill -->
+      <form id="glass-sphere-form" class="glass-sphere-form pill-hidden absolute top-full mt-6 left-1/2 -translate-x-1/2 w-full max-w-[145px] flex items-center rounded-full p-1 z-40">
         <input
           type="password"
           id="glass-sphere-input"
           dir="ltr"
-          required
+          autocomplete="current-password"
           placeholder="••••••••"
-          aria-label="Vault Password"
-          class="glass-sphere-input w-full rounded-full px-3 py-1.5 text-xs font-mono tracking-wider text-center"
+          class="glass-sphere-input w-full rounded-full px-3.5 py-1.5 text-center font-mono text-xs"
         />
       </form>
     </div>
   </main>
 
-  <!-- UNLOCKED VAULT WORKSPACE -->
-  <section id="unlocked-app-screen" class="hidden vault-screen-hidden relative z-10 flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col justify-center">
-    <div class="w-full bg-[#0F0F0F] border border-zinc-800/80 rounded-3xl p-5 sm:p-7 space-y-5 shadow-2xl">
-      <!-- Top Bar with Mini Status Sphere -->
-      <div class="flex items-center justify-between border-b border-zinc-800/80 pb-4">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="relative flex items-center justify-center w-8 h-8 shrink-0">
-            <canvas id="miniLiquidSphere" class="w-8 h-8 rounded-full"></canvas>
-          </div>
-          <h2 id="vault-header-title" class="text-sm sm:text-base font-medium text-zinc-100 truncate"></h2>
+  <!-- UNLOCKED VAULT WORKSPACE: Floating Liquid Glass Chrome over Clean Optical Stage -->
+  <section id="unlocked-app-screen" class="hidden vault-screen-hidden relative z-10 flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-5 sm:py-8 flex flex-col gap-4">
+    
+    <!-- Floating Top Navigation Bar (.glassEffect(.regular), outerRadius: 9999px, p-2 -> concentric inner controls) -->
+    <header class="liquid-glass liquid-glass-interactive rounded-full p-2 pl-2.5 pr-3.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="relative flex items-center justify-center w-10 h-10 shrink-0">
+          <canvas id="miniLiquidSphere" class="w-10 h-10"></canvas>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            id="toggle-titles-btn"
-            class="px-3.5 py-2 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-medium text-zinc-300 transition-colors"
-          >
-            ניהול כותרות
-          </button>
-          <button
-            type="button"
-            id="lock-btn"
-            class="px-4 py-2 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-medium text-zinc-300 transition-colors"
-          >
-            נעל כספת
-          </button>
+        <div class="min-w-0">
+          <h2 id="vault-header-title" class="text-sm sm:text-base font-semibold tracking-tight text-white truncate"></h2>
+          <p id="status-msg" class="text-[11px] text-zinc-400 truncate">מסונכרן ומאובטח</p>
         </div>
       </div>
 
-      <!-- Collapsible Title Manager Panel -->
-      <div id="title-manager-panel" class="hidden rounded-2xl bg-zinc-900/75 border border-zinc-800/90 p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-zinc-200">ניהול כותרות לפי מצב</span>
-          <button type="button" id="reset-titles-btn" class="text-[11px] text-zinc-400 hover:text-zinc-200 transition-colors">
-            איפוס לברירת מחדל
-          </button>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-          <label class="flex flex-col gap-1">
-            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
-              <span class="w-2 h-2 rounded-full bg-zinc-400"></span>
-              אפור (מצב רדום)
-            </span>
-            <input type="text" data-title-state="initial" placeholder="כספת נעולה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
-          </label>
-          <label class="flex flex-col gap-1">
-            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
-              <span class="w-2 h-2 rounded-full bg-purple-300"></span>
-              פעיל (הזנת סיסמה)
-            </span>
-            <input type="text" data-title-state="awake" placeholder="הזן סיסמת גישה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
-          </label>
-          <label class="flex flex-col gap-1">
-            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
-              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-              צהוב (מתחבר / מסנכרן)
-            </span>
-            <input type="text" data-title-state="building" placeholder="מתחבר ומאמת..." class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
-          </label>
-          <label class="flex flex-col gap-1">
-            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              ירוק (הצלחה / אושר)
-            </span>
-            <input type="text" data-title-state="success" placeholder="הגישה אושרה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
-          </label>
-          <label class="flex flex-col gap-1">
-            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
-              <span class="w-2 h-2 rounded-full bg-red-400"></span>
-              אדום (שגיאה)
-            </span>
-            <input type="text" data-title-state="error" placeholder="סיסמה שגויה" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
-          </label>
-          <label class="flex flex-col gap-1">
-            <span class="flex items-center gap-1.5 text-[11px] text-zinc-400">
-              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-              הכספת (מסך ראשי)
-            </span>
-            <input type="text" data-title-state="vault" placeholder="הכספת שלי" class="title-state-input bg-zinc-950/90 border border-zinc-800 focus:border-zinc-600 rounded-xl px-3 py-1.5 text-xs text-zinc-100 focus:outline-none" />
-          </label>
-        </div>
-      </div>
-
-      <!-- Add Record Form -->
-      <form id="entry-form" class="flex items-center gap-2.5">
-        <input
-          type="text"
-          id="entry-input"
-          required
-          placeholder="הזן רשומה חדשה לשמירה..."
-          class="flex-1 bg-zinc-900 border border-zinc-800/90 focus:border-zinc-600 rounded-full px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none transition-colors"
-        />
+      <!-- Unified Glass Toolbar Capsule (GlassEffectContainer) -->
+      <div class="glass-effect-container shrink-0">
         <button
-          type="submit"
-          id="save-btn"
-          class="px-5 py-2.5 rounded-full bg-zinc-100 hover:bg-white text-zinc-950 text-xs sm:text-sm font-medium shrink-0 transition-all active:scale-95"
+          type="button"
+          id="toggle-titles-btn"
+          class="glass-segment-btn min-h-[38px] px-3.5 text-xs"
         >
-          שמור
+          ניהול כותרות
         </button>
-      </form>
+        <button
+          type="button"
+          id="lock-btn"
+          class="glass-segment-btn min-h-[38px] px-3.5 text-xs text-rose-200 hover:text-rose-100"
+        >
+          נעל כספת
+        </button>
+      </div>
+    </header>
 
-      <!-- Live Search & Backup Export Bar -->
-      <div class="flex items-center gap-2">
+    <!-- Collapsible Title & iOS 27 Glass Transparency Sheet (Outer radius 28px, p-4 -> Inner radius 14px concentricity) -->
+    <div id="title-manager-panel" class="hidden liquid-glass rounded-[28px] p-4 sm:p-5 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+        <span class="text-xs font-semibold text-white">ניהול כותרות &amp; שקיפות Liquid Glass</span>
+        <button type="button" id="reset-titles-btn" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 text-[11px] text-zinc-200 transition-colors">
+          איפוס לברירת מחדל
+        </button>
+      </div>
+
+      <!-- iOS 27 Dynamic Transparency Slider (0.0 Ultra-Clear Lensing -> 1.0 Frosted Tint) -->
+      <div class="flex items-center justify-between gap-3 rounded-[14px] bg-black/25 border border-white/10 px-3.5 py-2.5">
+        <label for="glass-opacity-slider" class="text-[11px] text-zinc-300 shrink-0">שקיפות זכוכית (iOS 27)</label>
+        <input
+          id="glass-opacity-slider"
+          type="range"
+          min="0"
+          max="1"
+          step="0.02"
+          value="0.38"
+          dir="ltr"
+          class="w-32 sm:w-44 accent-sky-400 cursor-pointer"
+        />
+        <span id="glass-opacity-value" dir="ltr" class="font-mono text-[11px] text-zinc-400 w-9 text-right">38%</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+        <label class="flex flex-col gap-1">
+          <span class="flex items-center gap-1.5 text-[11px] text-zinc-300 px-1">
+            <span class="w-2 h-2 rounded-full bg-zinc-400"></span>
+            אפור (מצב רדום)
+          </span>
+          <input type="text" data-title-state="initial" placeholder="כספת נעולה" class="title-state-input rounded-[14px] bg-black/30 border border-white/15 focus:border-white/45 px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition-colors" />
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="flex items-center gap-1.5 text-[11px] text-zinc-300 px-1">
+            <span class="w-2 h-2 rounded-full bg-purple-300"></span>
+            פעיל (הזנת סיסמה)
+          </span>
+          <input type="text" data-title-state="awake" placeholder="הזן סיסמת גישה" class="title-state-input rounded-[14px] bg-black/30 border border-white/15 focus:border-white/45 px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition-colors" />
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="flex items-center gap-1.5 text-[11px] text-zinc-300 px-1">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            צהוב (מתחבר / מסנכרן)
+          </span>
+          <input type="text" data-title-state="building" placeholder="מתחבר ומאמת..." class="title-state-input rounded-[14px] bg-black/30 border border-white/15 focus:border-white/45 px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition-colors" />
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="flex items-center gap-1.5 text-[11px] text-zinc-300 px-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            ירוק (הצלחה / אושר)
+          </span>
+          <input type="text" data-title-state="success" placeholder="הגישה אושרה" class="title-state-input rounded-[14px] bg-black/30 border border-white/15 focus:border-white/45 px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition-colors" />
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="flex items-center gap-1.5 text-[11px] text-zinc-300 px-1">
+            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+            אדום (שגיאה)
+          </span>
+          <input type="text" data-title-state="error" placeholder="סיסמה שגויה" class="title-state-input rounded-[14px] bg-black/30 border border-white/15 focus:border-white/45 px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition-colors" />
+        </label>
+        <label class="flex flex-col gap-1">
+          <span class="flex items-center gap-1.5 text-[11px] text-zinc-300 px-1">
+            <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+            הכספת (מסך ראשי)
+          </span>
+          <input type="text" data-title-state="vault" placeholder="הכספת שלי" class="title-state-input rounded-[14px] bg-black/30 border border-white/15 focus:border-white/45 px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition-colors" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Floating Glass Composer Capsule (Concentric p-1.5 with inner rounded-full controls & 44pt touch target) -->
+    <form id="entry-form" class="liquid-glass liquid-glass-interactive rounded-full p-1.5 flex items-center gap-2">
+      <input
+        type="text"
+        id="entry-input"
+        required
+        placeholder="הזן רשומה חדשה לשמירה..."
+        class="flex-1 min-h-[44px] bg-transparent rounded-full px-4 text-sm text-white placeholder-zinc-400 focus:outline-none"
+      />
+      <button
+        type="submit"
+        id="save-btn"
+        class="liquid-glass-prominent min-h-[44px] px-6 rounded-full text-xs sm:text-sm font-semibold shrink-0"
+      >
+        שמור
+      </button>
+    </form>
+
+    <!-- Search Capsule & Grouped JSON Actions (GlassEffectContainer) -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+      <div class="liquid-glass rounded-full px-4 flex items-center flex-1 min-h-[44px]">
         <input
           type="search"
           id="search-input"
           placeholder="חיפוש מהיר ברשומות ובלוגים..."
-          class="flex-1 bg-zinc-900/70 border border-zinc-800/80 focus:border-zinc-600 rounded-full px-4 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none transition-colors"
+          class="w-full bg-transparent text-xs text-white placeholder-zinc-400 focus:outline-none"
         />
+      </div>
+      <div class="glass-effect-container self-start sm:self-auto shrink-0">
         <button
           type="button"
           id="import-json-btn"
-          class="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-medium text-zinc-300 shrink-0 transition-colors"
+          class="glass-segment-btn"
         >
           ייבוא JSON
         </button>
         <button
           type="button"
           id="export-json-btn"
-          class="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-medium text-zinc-300 shrink-0 transition-colors"
+          class="glass-segment-btn"
         >
           ייצוא JSON
         </button>
-        <input type="file" id="import-json-file" accept=".json,application/json" class="hidden" />
       </div>
-
-      <!-- Filter Pills & Records Count -->
-      <div class="flex items-center justify-between gap-2 text-xs text-zinc-400 px-1">
-        <div id="filter-bar" class="flex items-center gap-1.5">
-          <button type="button" data-filter="all" class="filter-btn px-3 py-1 rounded-full bg-zinc-800 text-zinc-100 font-medium transition-colors">הכל</button>
-          <button type="button" data-filter="entries" class="filter-btn px-3 py-1 rounded-full bg-zinc-900/70 hover:bg-zinc-800/80 text-zinc-400 transition-colors">רשומות</button>
-          <button type="button" data-filter="logs" class="filter-btn px-3 py-1 rounded-full bg-zinc-900/70 hover:bg-zinc-800/80 text-zinc-400 transition-colors">לוגים</button>
-          <button type="button" id="clear-logs-btn" class="px-2.5 py-1 rounded-full bg-zinc-900/50 hover:bg-red-950/60 hover:text-red-300 text-[11px] text-zinc-500 transition-colors">נקה לוגים</button>
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <span id="status-msg" class="text-[11px] text-zinc-400"></span>
-          <span id="records-count" dir="ltr" class="font-mono text-zinc-500">0 items</span>
-        </div>
-      </div>
-
-      <!-- Items List -->
-      <ul id="items-list" class="space-y-2.5 max-h-[52dvh] overflow-y-auto pr-0.5"></ul>
+      <input type="file" id="import-json-file" accept=".json,application/json" class="hidden" />
     </div>
+
+    <!-- Floating Segmented Filter Capsule + Clean Content Layer (No glass-on-glass stacking) -->
+    <div class="flex flex-wrap items-center justify-between gap-2.5 px-0.5">
+      <div id="filter-bar" class="glass-effect-container">
+        <button type="button" data-filter="all" class="filter-btn glass-segment-btn is-active">הכל</button>
+        <button type="button" data-filter="entries" class="filter-btn glass-segment-btn">רשומות</button>
+        <button type="button" data-filter="logs" class="filter-btn glass-segment-btn">לוגים</button>
+        <button type="button" id="clear-logs-btn" class="glass-segment-btn text-zinc-400 hover:text-rose-300">נקה לוגים</button>
+      </div>
+      <span id="records-count" dir="ltr" class="font-mono text-xs text-zinc-400 px-2">0 / 0 items</span>
+    </div>
+
+    <!-- Clean Non-Glass Scrolling Content List (Optical hierarchy: glass chrome floats above content) -->
+    <ul id="items-list" class="space-y-2.5 max-h-[54dvh] overflow-y-auto pr-0.5 pb-4"></ul>
   </section>
 
   <script>
@@ -1151,26 +1294,28 @@
         const totalScale = this.updatePhysics(dt, now);
         this.renderShader(now * 0.001);
 
-        // Composite upscaled offscreen sphere onto DPR main canvas with totalScale
+        // Composite upscaled offscreen sphere onto DPR main canvas with safe headroom so breathing/bursts never clip
         const cw = this.canvas.width;
         const ch = this.canvas.height;
+        const safeScale = totalScale * 0.80;
         this.ctx.clearRect(0, 0, cw, ch);
         this.ctx.save();
         this.ctx.translate(cw / 2, ch / 2);
-        this.ctx.scale(totalScale, totalScale);
+        this.ctx.scale(safeScale, safeScale);
         this.ctx.imageSmoothingEnabled = true;
         this.ctx.imageSmoothingQuality = 'high';
         this.ctx.drawImage(this.offCanvas, -cw / 2, -ch / 2, cw, ch);
         this.ctx.restore();
 
-        // Mirror live shader onto the mini sphere inside the unlocked vault header
+        // Mirror live shader onto the mini sphere inside the unlocked vault header with full headroom
         if (miniSphereCanvas && miniSphereCtx) {
           const mw = miniSphereCanvas.width;
           const mh = miniSphereCanvas.height;
+          const miniScale = 0.78 + (totalScale - 1) * 0.35;
           miniSphereCtx.clearRect(0, 0, mw, mh);
           miniSphereCtx.save();
           miniSphereCtx.translate(mw / 2, mh / 2);
-          miniSphereCtx.scale(0.92 + (totalScale - 1) * 0.45, 0.92 + (totalScale - 1) * 0.45);
+          miniSphereCtx.scale(miniScale, miniScale);
           miniSphereCtx.imageSmoothingEnabled = true;
           miniSphereCtx.imageSmoothingQuality = 'high';
           miniSphereCtx.drawImage(this.offCanvas, -mw / 2, -mh / 2, mw, mh);
@@ -1199,8 +1344,8 @@
       miniSphereCanvas = document.getElementById('miniLiquidSphere');
       if (!miniSphereCanvas) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      miniSphereCanvas.width = Math.round(32 * dpr);
-      miniSphereCanvas.height = Math.round(32 * dpr);
+      miniSphereCanvas.width = Math.round(40 * dpr);
+      miniSphereCanvas.height = Math.round(40 * dpr);
       miniSphereCtx = miniSphereCanvas.getContext('2d', { alpha: true });
     }
 
@@ -1227,7 +1372,7 @@
       const backdrop = document.getElementById('dormant-backdrop');
 
       body.classList.remove('bg-[#050507]');
-      body.classList.add('bg-[#0F0F0F]');
+      body.classList.add('liquid-ambient-stage');
       backdrop.classList.add('opacity-0');
 
       requestAnimationFrame(() => {
@@ -1255,7 +1400,7 @@
         form.classList.remove('pill-visible', 'pill-shake', 'pill-connecting');
         form.classList.add('pill-hidden');
 
-        body.classList.remove('bg-[#0F0F0F]');
+        body.classList.remove('liquid-ambient-stage');
         body.classList.add('bg-[#050507]');
         backdrop.classList.remove('opacity-0');
 
@@ -1267,36 +1412,6 @@
         sphere.resize();
         sphere.setState('initial');
       }, 520);
-    }
-
-    function resetToDormantLock() {
-      const form = document.getElementById('glass-sphere-form');
-      const input = document.getElementById('glass-sphere-input');
-      const body = document.getElementById('app-canvas');
-      const backdrop = document.getElementById('dormant-backdrop');
-      const unlockedScreen = document.getElementById('unlocked-app-screen');
-      const lockScreen = document.getElementById('vault-lock-screen');
-
-      unlockedScreen.classList.remove('vault-screen-visible');
-      unlockedScreen.classList.add('vault-screen-collapsing');
-
-      setTimeout(() => {
-        input.value = '';
-        form.classList.remove('pill-visible', 'pill-shake', 'pill-connecting');
-        form.classList.add('pill-hidden');
-
-        body.classList.remove('bg-[#0F0F0F]');
-        body.classList.add('bg-[#050507]');
-        backdrop.classList.remove('opacity-0');
-
-        unlockedScreen.classList.add('hidden', 'vault-screen-hidden');
-        unlockedScreen.classList.remove('vault-screen-collapsing');
-
-        lockScreen.classList.remove('hidden');
-        sphere.spawnStart = performance.now();
-        sphere.resize();
-        sphere.setState('initial');
-      }, 450);
     }
 
     function formatTimestamp(iso) {
@@ -1330,7 +1445,7 @@
 
       if (filtered.length === 0) {
         const empty = document.createElement('li');
-        empty.className = 'py-8 text-center text-xs text-zinc-500';
+        empty.className = 'py-10 text-center text-xs text-zinc-400';
         empty.textContent = activeFilter === 'all'
           ? 'הכספת ריקה. הוסף רשומה ראשונה למעלה.'
           : 'אין פריטים להצגה בסינון הנוכחי.';
@@ -1340,77 +1455,77 @@
 
       [...filtered].reverse().forEach((item) => {
         const isLoginLog = typeof item === 'object' && item.type === 'login_log';
-      const displayText = typeof item === 'object' ? (item.text || JSON.stringify(item)) : String(item);
-      const itemId = typeof item === 'object' && item.id != null ? item.id : null;
-      const isPinned = typeof item === 'object' && Boolean(item.pinned);
+        const displayText = typeof item === 'object' ? (item.text || JSON.stringify(item)) : String(item);
+        const itemId = typeof item === 'object' && item.id != null ? item.id : null;
+        const isPinned = typeof item === 'object' && Boolean(item.pinned);
 
-      const li = document.createElement('li');
-      li.className = isLoginLog
-        ? 'px-4 py-2.5 rounded-2xl bg-zinc-900/50 border border-zinc-800/50 text-xs text-zinc-400 flex items-center justify-between gap-3'
-        : isPinned
-          ? 'px-4 py-3 rounded-2xl bg-zinc-900 border border-amber-500/35 text-xs sm:text-sm text-zinc-100 flex items-center justify-between gap-3 transition-colors hover:border-amber-400/50'
-          : 'px-4 py-3 rounded-2xl bg-zinc-900 border border-zinc-800/80 text-xs sm:text-sm text-zinc-200 flex items-center justify-between gap-3 transition-colors hover:border-zinc-700/80';
+        const li = document.createElement('li');
+        li.className = isLoginLog
+          ? 'vault-content-row is-log px-4 py-3 text-xs text-zinc-400 flex items-center justify-between gap-3'
+          : isPinned
+            ? 'vault-content-row is-pinned px-4 py-3.5 text-xs sm:text-sm text-white flex items-center justify-between gap-3'
+            : 'vault-content-row px-4 py-3.5 text-xs sm:text-sm text-zinc-100 flex items-center justify-between gap-3';
 
-      const textSpan = document.createElement('span');
-      textSpan.className = 'break-words leading-relaxed flex-1';
-      textSpan.textContent = isPinned ? `📌 ${displayText}` : displayText;
+        const textSpan = document.createElement('span');
+        textSpan.className = 'break-words leading-relaxed flex-1';
+        textSpan.textContent = isPinned ? `📌 ${displayText}` : displayText;
 
-      const actionsWrap = document.createElement('div');
-      actionsWrap.className = 'flex items-center gap-2 shrink-0';
+        const actionsWrap = document.createElement('div');
+        actionsWrap.className = 'flex items-center gap-1.5 shrink-0';
 
-      const timeSpan = document.createElement('span');
-      timeSpan.dir = 'ltr';
-      timeSpan.className = 'font-mono text-[11px] text-zinc-500';
-      timeSpan.textContent = typeof item === 'object' ? formatTimestamp(item.createdAt) : '';
-      actionsWrap.appendChild(timeSpan);
+        const timeSpan = document.createElement('span');
+        timeSpan.dir = 'ltr';
+        timeSpan.className = 'font-mono text-[11px] text-zinc-500 ml-1';
+        timeSpan.textContent = typeof item === 'object' ? formatTimestamp(item.createdAt) : '';
+        actionsWrap.appendChild(timeSpan);
 
-      if (!isLoginLog) {
-        if (itemId != null) {
-          const pinBtn = document.createElement('button');
-          pinBtn.type = 'button';
-          pinBtn.className = isPinned
-            ? 'px-2.5 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/30 text-[11px] text-amber-200 transition-colors'
-            : 'px-2.5 py-1 rounded-full bg-zinc-800/70 hover:bg-zinc-700 text-[11px] text-zinc-300 transition-colors';
-          pinBtn.textContent = isPinned ? 'בטל נעיצה' : 'נעץ';
-          pinBtn.addEventListener('click', async () => {
-            currentItems = currentItems.map((entry) =>
-              (typeof entry === 'object' && entry.id === itemId)
-                ? { ...entry, pinned: !entry.pinned }
-                : entry
-            );
-            renderItems();
-            if (!VaultDB.endpoint) return;
-            sphere.setState('building');
-            const status = document.getElementById('status-msg');
-            if (status) status.textContent = 'מעדכן נעיצה...';
-            try {
-              await VaultDB.save(currentItems);
-              sphere.setState('success');
-              if (status) status.textContent = 'נשמר בהצלחה ✓';
-              setTimeout(() => sphere.setState('ready'), 900);
-            } catch (err) {
-              sphere.setState('error');
-              if (status) status.textContent = 'שגיאה בשמירה: ' + err.message;
-            }
-          });
-          actionsWrap.appendChild(pinBtn);
-        }
+        if (!isLoginLog) {
+          if (itemId != null) {
+            const pinBtn = document.createElement('button');
+            pinBtn.type = 'button';
+            pinBtn.className = isPinned
+              ? 'px-2.5 py-1.5 rounded-full bg-amber-400/20 hover:bg-amber-400/30 text-[11px] text-amber-200 transition-colors'
+              : 'px-2.5 py-1.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-[11px] text-zinc-300 transition-colors';
+            pinBtn.textContent = isPinned ? 'בטל נעיצה' : 'נעץ';
+            pinBtn.addEventListener('click', async () => {
+              currentItems = currentItems.map((entry) =>
+                (typeof entry === 'object' && entry.id === itemId)
+                  ? { ...entry, pinned: !entry.pinned }
+                  : entry
+              );
+              renderItems();
+              if (!VaultDB.endpoint) return;
+              sphere.setState('building');
+              const status = document.getElementById('status-msg');
+              if (status) status.textContent = 'מעדכן נעיצה...';
+              try {
+                await VaultDB.save(currentItems);
+                sphere.setState('success');
+                if (status) status.textContent = 'נשמר בהצלחה ✓';
+                setTimeout(() => sphere.setState('ready'), 900);
+              } catch (err) {
+                sphere.setState('error');
+                if (status) status.textContent = 'שגיאה בשמירה: ' + err.message;
+              }
+            });
+            actionsWrap.appendChild(pinBtn);
+          }
 
-        if (itemId != null) {
+          if (itemId != null) {
             const editBtn = document.createElement('button');
             editBtn.type = 'button';
-            editBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-800/70 hover:bg-zinc-700 text-[11px] text-zinc-300 transition-colors';
+            editBtn.className = 'px-2.5 py-1.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-[11px] text-zinc-300 transition-colors';
             editBtn.textContent = 'ערוך';
             editBtn.addEventListener('click', () => {
               if (li.querySelector('.inline-edit-input')) return;
               const editInput = document.createElement('input');
               editInput.type = 'text';
               editInput.value = displayText;
-              editInput.className = 'inline-edit-input flex-1 bg-zinc-950 border border-zinc-700 rounded-full px-3 py-1 text-xs text-zinc-100 focus:outline-none';
+              editInput.className = 'inline-edit-input flex-1 bg-black/40 border border-white/25 rounded-full px-3.5 py-1.5 text-xs text-white focus:outline-none';
 
               const saveEditBtn = document.createElement('button');
               saveEditBtn.type = 'button';
-              saveEditBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-950 text-[11px] font-medium shrink-0';
+              saveEditBtn.className = 'liquid-glass-prominent px-3.5 py-1.5 rounded-full text-[11px] font-semibold shrink-0';
               saveEditBtn.textContent = 'עדכן';
 
               const commitEdit = async () => {
@@ -1459,7 +1574,7 @@
 
           const copyBtn = document.createElement('button');
           copyBtn.type = 'button';
-          copyBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-[11px] text-zinc-300 transition-colors';
+          copyBtn.className = 'px-2.5 py-1.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-[11px] text-zinc-300 transition-colors';
           copyBtn.textContent = 'העתק';
           copyBtn.addEventListener('click', () => copyToClipboard(displayText, copyBtn));
           actionsWrap.appendChild(copyBtn);
@@ -1467,7 +1582,7 @@
           if (itemId != null) {
             const delBtn = document.createElement('button');
             delBtn.type = 'button';
-            delBtn.className = 'px-2.5 py-1 rounded-full bg-zinc-800/60 hover:bg-red-950/80 hover:text-red-300 text-[11px] text-zinc-400 transition-colors';
+            delBtn.className = 'px-2.5 py-1.5 rounded-full bg-white/[0.04] hover:bg-rose-500/20 hover:text-rose-200 text-[11px] text-zinc-400 transition-colors';
             delBtn.textContent = 'מחק';
             delBtn.addEventListener('click', async () => {
               currentItems = currentItems.filter((entry) => !(typeof entry === 'object' && entry.id === itemId));
@@ -1521,9 +1636,36 @@
       initMiniSphere();
       sphere.start();
 
+      // Pointer-tracking specular lensing on interactive Liquid Glass controls
+      document.querySelectorAll('.liquid-glass-interactive').forEach((el) => {
+        el.addEventListener('pointermove', (e) => {
+          const rect = el.getBoundingClientRect();
+          el.style.setProperty('--gx', `${e.clientX - rect.left}px`);
+          el.style.setProperty('--gy', `${e.clientY - rect.top}px`);
+        });
+      });
+
+      // iOS 27 Dynamic Transparency Slider
+      const opacitySlider = document.getElementById('glass-opacity-slider');
+      const opacityValue = document.getElementById('glass-opacity-value');
+      const savedTint = localStorage.getItem('vaultdb_glass_tint');
+      if (savedTint !== null && opacitySlider) {
+        opacitySlider.value = savedTint;
+        document.documentElement.style.setProperty('--glass-tint-level', savedTint);
+        if (opacityValue) opacityValue.textContent = `${Math.round(parseFloat(savedTint) * 100)}%`;
+      }
+      opacitySlider?.addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.documentElement.style.setProperty('--glass-tint-level', val);
+        if (opacityValue) opacityValue.textContent = `${Math.round(parseFloat(val) * 100)}%`;
+        try { localStorage.setItem('vaultdb_glass_tint', val); } catch (_) {}
+      });
+
       const titleManagerPanel = document.getElementById('title-manager-panel');
-      document.getElementById('toggle-titles-btn')?.addEventListener('click', () => {
-        titleManagerPanel?.classList.toggle('hidden');
+      const toggleTitlesBtn = document.getElementById('toggle-titles-btn');
+      toggleTitlesBtn?.addEventListener('click', () => {
+        const isHidden = titleManagerPanel?.classList.toggle('hidden');
+        toggleTitlesBtn.classList.toggle('is-active', !isHidden);
       });
 
       document.querySelectorAll('.title-state-input').forEach((input) => {
@@ -1545,10 +1687,7 @@
         btn.addEventListener('click', () => {
           activeFilter = btn.dataset.filter;
           document.querySelectorAll('.filter-btn').forEach((b) => {
-            const isSelected = b.dataset.filter === activeFilter;
-            b.className = isSelected
-              ? 'filter-btn px-3 py-1 rounded-full bg-zinc-800 text-zinc-100 font-medium transition-colors'
-              : 'filter-btn px-3 py-1 rounded-full bg-zinc-900/70 hover:bg-zinc-800/80 text-zinc-400 transition-colors';
+            b.classList.toggle('is-active', b.dataset.filter === activeFilter);
           });
           renderItems();
         });
@@ -1691,7 +1830,7 @@
         if (!text || !VaultDB.endpoint) return;
 
         // Optimistic UI update
-        currentItems = [...currentItems, { id: Date.now(), text, createdAt: new Date().toISOString(), test: 111 }];
+        currentItems = [...currentItems, { id: Date.now(), text, createdAt: new Date().toISOString() }];
         input.value = '';
         renderItems();
 
